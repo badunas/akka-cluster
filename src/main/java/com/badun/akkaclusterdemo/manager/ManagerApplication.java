@@ -1,14 +1,9 @@
 package com.badun.akkaclusterdemo.manager;
 
-import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
-import com.badun.akkaclusterdemo.message.PieceOfWork;
-import com.badun.akkaclusterdemo.worker.WorkerActor;
-import com.typesafe.config.Config;
+import akka.routing.FromConfig;
 import com.typesafe.config.ConfigFactory;
-
-import java.util.Date;
 
 /**
  * Created by Artsiom Badun.
@@ -16,13 +11,9 @@ import java.util.Date;
 public class ManagerApplication {
 
     public static void main(String[] args) {
-        Config config = ConfigFactory
-                .parseString("akka.remote.netty.tcp.port=" + args[0])
-                .withFallback(ConfigFactory.load("manager"));
-
-        ActorSystem system = ActorSystem.create("manager-system", config);
-
-        ActorRef worker = system.actorOf(Props.create(WorkerActor.class), "worker");
-        worker.tell(new PieceOfWork("test main", new Date(), "test message"), ActorRef.noSender());
+        ActorSystem system = ActorSystem.create("ManagerSystem", ConfigFactory.load("manager"));
+        Props managerActorProps = Props.create(ManagerActor.class, "akka.tcp://WorkerSystem@127.0.0.1:2552/user/worker-router");
+        Props managerRouterProps = FromConfig.getInstance().props(managerActorProps);
+        system.actorOf(managerRouterProps, "manager-router");
     }
 }
