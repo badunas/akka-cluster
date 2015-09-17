@@ -14,7 +14,7 @@ public class WorkerApplication {
 
     public static void main(String[] args) {
         Config config = ConfigFactory
-                .parseString("akka.remote.netty.tcp.port=2554")
+                .parseString("akka.remote.netty.tcp.port=2553")
                 .withFallback(ConfigFactory.parseString("akka.cluster.roles = [worker]"))
                 .withFallback(ConfigFactory.load("cluster"));
         ActorSystem system = ActorSystem.create("ClusterSystem", config);

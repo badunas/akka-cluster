@@ -22,7 +22,7 @@ public class WorkerActor extends AbstractActor {
     }
 
     private void handleWorkMessage(Msg.PieceOfWork message) {
-        Sleeper.sleep(1);
+        Sleeper.sleep(5);
         log.info("[WORKER] Actor " + this + " handled message: " + message);
         sender().tell(new Msg.WorkDone(), context().parent());
         sender().tell(new Msg.WorkDone(), context().parent());
